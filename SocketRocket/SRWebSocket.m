@@ -341,6 +341,7 @@ static __strong NSData *CRLFCRLF;
     }
     
     _readyState = SR_CONNECTING;
+    _connectionTimeout = 120.0;
     _consumerStopped = YES;
     _webSocketVersion = 13;
     
@@ -603,6 +604,23 @@ static __strong NSData *CRLFCRLF;
     
     [_outputStream open];
     [_inputStream open];
+
+    if (self.connectionTimeout > 0.0) {
+        dispatch_time_t checkTime = dispatch_time(DISPATCH_TIME_NOW,
+                                                  (int64_t)(self.connectionTimeout * NSEC_PER_SEC));
+        dispatch_after(checkTime, _workQueue, ^(void){
+            // Timeout is only relevant if we're still connecting
+            // now that connectionTimeout seconds have passed.
+            if (SR_CONNECTING == self.readyState) {
+                [self _failWithError:[NSError
+                                      errorWithDomain:@"org.lolrus.SocketRocket"
+                                      code:2146
+                                      userInfo:[NSDictionary
+                                                dictionaryWithObject:@"Timeout connecting to host"
+                                                forKey:NSLocalizedDescriptionKey]]];
+            }
+        });
+    }
 }
 
 - (void)scheduleInRunLoop:(NSRunLoop *)aRunLoop forMode:(NSString *)mode;

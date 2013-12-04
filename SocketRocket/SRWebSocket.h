@@ -38,6 +38,7 @@ extern NSString *const SRWebSocketErrorDomain;
 
 @property (nonatomic, assign) id <SRWebSocketDelegate> delegate;
 
+@property (nonatomic, assign) NSTimeInterval connectionTimeout;
 @property (nonatomic, readonly) SRReadyState readyState;
 @property (nonatomic, readonly, retain) NSURL *url;
 
