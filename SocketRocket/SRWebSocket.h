@@ -52,6 +52,7 @@ extern NSString *const SRHTTPResponseErrorKey;
 
 @property (nonatomic, weak) id <SRWebSocketDelegate> delegate;
 
+@property (nonatomic, assign) NSTimeInterval connectionTimeout;
 @property (nonatomic, readonly) SRReadyState readyState;
 @property (nonatomic, readonly, retain) NSURL *url;
 
